@@ -63,10 +63,21 @@
 
 </div>
 
-<div class="mt-8 text-center">
-    <a href="{{ route('client.abonnement') }}" class="text-sm text-[var(--muted)] hover:text-white transition">
-        J'ai déjà un abonnement actif →
+<div class="mt-8 space-y-3 text-center">
+
+    <a href="{{ route('client.ticket.form', $hotspot) }}"
+       class="inline-flex items-center gap-2 text-[var(--signal)] hover:text-white transition">
+        <i class="fa-solid fa-ticket"></i>
+        Utiliser un ticket
     </a>
+
+    <div>
+        <a href="{{ route('client.abonnement') }}"
+           class="text-sm text-[var(--muted)] hover:text-white transition">
+            J'ai déjà un abonnement actif →
+        </a>
+    </div>
+
 </div>
 
 @endsection

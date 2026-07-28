@@ -20,25 +20,25 @@
 @stack('scripts')
 <body class="bg-gray-100">
 
-<div class="flex min-h-screen">
+<div class="flex h-screen overflow-hidden">
 
-    {{-- Sidebar --}}
+    {{-- Sidebar (fixe, ne scrolle jamais) --}}
     @include('layouts.sidebar')
 
-    <div class="flex-1 flex flex-col">
+    {{-- Colonne de droite : décalée de la largeur de la sidebar sur desktop --}}
+    <div class="flex-1 flex flex-col h-screen overflow-hidden lg:pl-72">
 
-        {{-- Navbar --}}
+        {{-- Navbar (fixe, ne scrolle jamais) --}}
         @include('layouts.navbar')
 
-        {{-- Contenu --}}
-        <main class="flex-1 p-6">
+        {{-- Seul ce bloc scrolle --}}
+        <main class="flex-1 overflow-y-auto p-6">
 
             @yield('content')
 
         </main>
 
     </div>
-    
 
 </div>
 

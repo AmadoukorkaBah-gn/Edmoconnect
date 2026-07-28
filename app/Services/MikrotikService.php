@@ -75,26 +75,56 @@ public function createHotspotUser(string $username, string $password, string $pr
     try {
         $client = $this->connect();
 
-        $query = (new Query('/ip/hotspot/user/add'))
+        // Vérifie si l'utilisateur existe déjà
+        $findQuery = (new Query('/ip/hotspot/user/print'))
+            ->where('name', $username);
+
+        $users = $client->query($findQuery)->read();
+
+        // -------------------------
+        // Mise à jour
+        // -------------------------
+        if (!empty($users)) {
+
+            $userId = $users[0]['.id'];
+
+            $updateQuery = (new Query('/ip/hotspot/user/set'))
+                ->equal('.id', $userId)
+                ->equal('password', $password)
+                ->equal('profile', $profile)
+                ->equal('limit-uptime', $limitUptimeHeures . ':00:00')
+                ->equal('disabled', 'no');
+
+            $client->query($updateQuery)->read();
+
+            return [
+                'success' => true,
+                'updated' => true,
+            ];
+        }
+
+        // -------------------------
+        // Création
+        // -------------------------
+        $createQuery = (new Query('/ip/hotspot/user/add'))
             ->equal('name', $username)
             ->equal('password', $password)
             ->equal('profile', $profile)
             ->equal('limit-uptime', $limitUptimeHeures . ':00:00');
 
-        $response = $client->query($query)->read();
+        $client->query($createQuery)->read();
 
-        // RouterOS renvoie parfois une erreur metier (!trap) sans lever d'exception PHP.
-        // On verifie explicitement la presence d'un message d'erreur dans la reponse.
-        if (isset($response['after']['message'])) {
-            return [
-                'success' => false,
-                'error' => $response['after']['message'],
-            ];
-        }
+        return [
+            'success' => true,
+            'created' => true,
+        ];
 
-        return ['success' => true];
     } catch (Exception $e) {
-        return ['success' => false, 'error' => $e->getMessage()];
+
+        return [
+            'success' => false,
+            'error' => $e->getMessage(),
+        ];
     }
 }
 /**

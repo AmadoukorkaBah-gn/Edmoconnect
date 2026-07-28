@@ -41,6 +41,7 @@
                 ['route' => 'mikrotik-servers.index', 'icon' => 'fa-server', 'label' => 'Serveurs MikroTik'],
                 ['route' => 'hotspots.index', 'icon' => 'fa-wifi', 'label' => 'Hotspots'],
                 ['route' => 'forfaits.index', 'icon' => 'fa-box', 'label' => 'Forfaits'],
+                ['route' => 'tickets.index', 'icon' => 'fa-ticket', 'label' => 'Tickets'],
                 ['route' => 'abonnements.index', 'icon' => 'fa-id-card', 'label' => 'Abonnements'],
                 ['route' => 'paiements.index', 'icon' => 'fa-money-bill-wave', 'label' => 'Paiements'],
                 ['route' => 'statistiques.index', 'icon' => 'fa-chart-line', 'label' => 'Statistiques'],

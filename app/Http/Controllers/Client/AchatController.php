@@ -147,26 +147,46 @@ class AchatController extends Controller
         return view('client.paiement-annule');
     }
 
-    public function monAbonnement(Request $request)
-    {
-        $telephone = $request->query('telephone');
-        $abonnement = null;
+public function monAbonnement(Request $request)
+{
+    $telephone = preg_replace('/\D/', '', $request->query('telephone'));
 
-        if ($telephone) {
-            $user = User::where('telephone', $telephone)->first();
+    $abonnement = null;
+    $ticket = null;
 
-            $abonnement = $user
-                ? Abonnement::where('user_id', $user->id)
-                    ->where('statut', 'active')
-                    ->where('date_fin', '>=', now())
+    if ($telephone) {
+
+        $user = User::where('telephone', $telephone)->first();
+
+        if ($user) {
+
+            // Recherche d'un abonnement actif
+            $abonnement = Abonnement::where('user_id', $user->id)
+                ->where('statut', 'active')
+                ->where('date_fin', '>=', now())
+                ->with(['hotspot', 'forfait'])
+                ->latest()
+                ->first();
+
+            // Si aucun abonnement, rechercher un ticket actif
+            if (!$abonnement) {
+
+                $ticket = \App\Models\Ticket::where('user_id', $user->id)
+                    ->where('status', 'activated')
                     ->with(['hotspot', 'forfait'])
                     ->latest()
-                    ->first()
-                : null;
-        }
+                    ->first();
 
-        return view('client.abonnement', compact('abonnement', 'telephone'));
+            }
+        }
     }
+
+    return view('client.abonnement', [
+        'telephone'  => $telephone,
+        'abonnement' => $abonnement,
+        'ticket'     => $ticket,
+    ]);
+}
 
     private function activerAbonnement(Paiement $paiement): void
     {
